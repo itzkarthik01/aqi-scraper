@@ -1,47 +1,44 @@
-import csv
-import time
-from datetime import datetime
 from selenium import webdriver
-from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
+import pandas as pd
+import time
 
-# Initialize Chrome WebDriver
+# Setup Chrome options
 options = webdriver.ChromeOptions()
-options.add_argument("--headless")
-driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+options.add_argument("--headless")  # Run in headless mode (no UI)
+options.add_argument("--no-sandbox")
+options.add_argument("--disable-dev-shm-usage")
 
-# URL of AQI website
-url = "https://www.aqi.in/"
-import os
+# Setup WebDriver
+service = Service(ChromeDriverManager().install())
+driver = webdriver.Chrome(service=service, options=options)
 
-csv_file = os.path.join(os.getcwd(), "aqi_data.csv")  # ✅ Correct for GitHub Actions
+# Set timeouts
+driver.set_page_load_timeout(30)  # Max wait time for page load
+driver.set_script_timeout(30)  # Max wait time for scripts
 
+# URL of the AQI website
+url = "https://www.binance.com/"  # Update with the correct AQI data source
 
 try:
-    while True:  # Infinite loop to run every 60 seconds
-        driver.get(url)
-        time.sleep(5)  # Wait for the page to load
+    driver.get(url)
+    time.sleep(5)  # Allow time for the page to load
 
-        # Locate AQI value
-        aqi_element = driver.find_element(By.XPATH, "//span[@title]")
-        aqi_value = aqi_element.text.strip()
-        
-        # Get timestamp
-        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    # Example: Scrape an element (update selector as needed)
+    data_element = driver.find_element(By.XPATH, "//div[@class='your-element-class']")
+    scraped_data = data_element.text
 
-        # Append data to CSV
-        with open(csv_file, "a", newline="", encoding="utf-8") as file:
-            writer = csv.writer(file)
-            writer.writerow([timestamp, aqi_value])
+    # Save to CSV
+    csv_file = "aqi_data.csv"
+    df = pd.DataFrame({"AQI Data": [scraped_data]})
+    df.to_csv(csv_file, mode="a", index=False, header=False)
 
-        print(f"✅ Data saved: {timestamp}, AQI: {aqi_value}")
+    print("AQI data successfully scraped and saved!")
 
-        # Wait for 60 seconds before next fetch
-        time.sleep(60)
-
-except KeyboardInterrupt:
-    print("⏹️ Script stopped manually.")
+except Exception as e:
+    print(f"Error occurred: {e}")
 
 finally:
     driver.quit()
