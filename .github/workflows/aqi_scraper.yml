@@ -17,11 +17,13 @@ jobs:
         with:
           python-version: "3.x"
 
-      - name: Install dependencies
+      - name: Install Chrome
         run: |
-          pip install --upgrade pip
-          pip install selenium webdriver-manager
-          pip install -r requirements.txt || echo "No requirements file"
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt || echo "No requirements file"
 
       - name: Run AQI scraper
         run: python aqi_scraper.py
