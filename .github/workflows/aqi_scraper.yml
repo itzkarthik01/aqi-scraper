@@ -2,7 +2,7 @@ name: AQI Scraper Automation
 
 on:
   schedule:
-    - cron: "*/1 * * * *"  # Runs every minute
+    - cron: "* * * * *"  # Runs every minute
   workflow_dispatch:  # Allows manual triggering if needed
 
 jobs:
