@@ -1,13 +1,14 @@
-name: Run AQI Scraper
+name: AQI Scraper Automation
 
 on:
   schedule:
     - cron: "*/1 * * * *"  # Runs every minute
-  workflow_dispatch:  # Allows manual triggering
+  workflow_dispatch:  # Allows manual triggering if needed
 
 jobs:
   scrape:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -18,17 +19,20 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install -r requirements.txt  # Modify as needed
+        run: pip install -r requirements.txt
+
+      - name: Debug file structure
+        run: ls -lah  # Check if aqi_scraper.py exists
 
       - name: Run AQI Scraper
-        run: python aqi_scraper.py  # Modify if script name is different
+        run: python aqi_scraper.py  # Ensure this file exists in your repo
 
-      - name: Commit and push changes
+      - name: Commit and push updated AQI data
         run: |
           git config --global user.email "imkarthik018@gmail.com"
           git config --global user.name "itzkarthik01"
           git add aqi_data.csv
           git commit -m "Updated AQI data" || echo "No changes to commit"
-          git push https://github.com/itzkarthik01/aqi-scraper.git main
+          git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
