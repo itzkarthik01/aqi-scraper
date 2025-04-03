@@ -13,7 +13,10 @@ driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), opti
 
 # URL of AQI website
 url = "https://www.aqi.in/"
-csv_file = "E:/Dw/aqi_data.csv"
+import os
+
+csv_file = os.path.join(os.getcwd(), "aqi_data.csv")  # ✅ Correct for GitHub Actions
+
 
 try:
     while True:  # Infinite loop to run every 60 seconds
