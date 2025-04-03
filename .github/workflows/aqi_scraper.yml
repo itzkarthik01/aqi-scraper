@@ -18,7 +18,10 @@ jobs:
           python-version: "3.x"
 
       - name: Install dependencies
-        run: pip install -r requirements.txt || echo "No requirements file"
+        run: |
+          pip install --upgrade pip
+          pip install selenium
+          pip install -r requirements.txt || echo "No requirements file"
 
       - name: Run AQI scraper
         run: python aqi_scraper.py
