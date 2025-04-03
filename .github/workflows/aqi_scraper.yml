@@ -21,7 +21,7 @@ jobs:
         run: pip install -r requirements.txt  # Modify as needed
 
       - name: Run AQI Scraper
-        run: python scrape.py  # Modify if script name is different
+        run: python aqi_scraper.py  # Modify if script name is different
 
       - name: Commit and push changes
         run: |
